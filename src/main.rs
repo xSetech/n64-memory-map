@@ -2,10 +2,10 @@
 
 //! CLI to describe an N64 virtual address
 //!
-//! Based information about the memory map documented here:
+//! Based on information the memory map documentation here:
 //! https://n64brew.dev/wiki/Memory_map
 //!
-//! CLI accepts one of two arguments with the following behaviors for each:
+//! The CLI accepts one argument with the following behaviors respectively:
 //!
 //! 1. If given a 32-bit hexadecimal number prefixed with "0x", details about
 //!    the address are printed to stdout.

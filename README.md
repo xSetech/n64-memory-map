@@ -21,7 +21,7 @@ cargo build --release
 
 ## Virtual Address
 
-If the first argument to the CLI is a 32-bit hexadecimal address prefixed with
+If the first argument to the CLI is a 32-bit hexadecimal number prefixed with
 "0x", information about its location in the memory map is printed, e.g.
 
 ```
