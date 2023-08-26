@@ -1,0 +1,17 @@
+[package]
+name = "n64-memory-map"
+description = "CLI to describe an N64 virtual address"
+version = "1.0.0"
+edition = "2021"
+license = "GPL-3.0+"
+rust-version = "1.72"
+
+[dependencies]
+regex = "1.9.1"
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = true
+panic = "abort"
+opt-level = "z"
