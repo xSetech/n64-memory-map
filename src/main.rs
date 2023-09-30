@@ -94,7 +94,8 @@ static SUBREGIONS: &[Region] = &[
 #[derive(Debug)]
 #[allow(dead_code)]
 struct AddressLocation {
-    address: u32,
+    virtual_address: u32,
+    physical_address: u32,
     segment: Option<(&'static str, &'static str)>,
     region: Option<(&'static str, &'static str)>,
     subregions: Vec<(&'static str, &'static str)>,
@@ -121,7 +122,8 @@ fn get_segment_region_subregion(address: u32) -> AddressLocation {
         .collect();
 
     AddressLocation {
-        address: address_raw,
+        virtual_address: address,
+        physical_address: address_raw,
         segment,
         region,
         subregions,
