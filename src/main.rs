@@ -21,6 +21,7 @@ use std::path::Path;
 use std::process::exit;
 
 use regex::Regex;
+use tabular::{Table, Row};
 
 type Region = (
     u32,            // start
@@ -91,7 +92,6 @@ static SUBREGIONS: &[Region] = &[
 
 /// Describes the location of the address by naming its segment, region, and
 /// subregion as documented in the mappings above.
-#[derive(Debug)]
 #[allow(dead_code)]
 struct AddressLocation {
     virtual_address: u32,
@@ -183,6 +183,68 @@ fn rewrite_lines_of_file(filename: String) -> io::Result<()> {
     Ok(())
 }
 
+/// Prints address details to stdout.
+fn print_location(addr: &AddressLocation) {
+    let mut table: Table = Table::new("{:<} {:<}");
+
+    table.add_row(
+        Row::new()
+            .with_cell("Annotation:")
+            .with_cell(
+                address_location_to_string(addr)
+            )
+    );
+
+    table.add_row(
+        Row::new()
+            .with_cell("Virtual Address:")
+            .with_cell(
+                format!("0x{:08X}", addr.virtual_address)
+            )
+    );
+
+    table.add_row(
+        Row::new()
+            .with_cell("Physical Address:")
+            .with_cell(
+                format!("0x{:08X}", addr.physical_address)
+            )
+    );
+
+    table.add_row(
+        Row::new()
+            .with_cell("Segment:")
+            .with_cell(
+                addr.segment.map_or(
+                    "Unknown".to_string(),
+                    |(a, b)| format!("{}, {}", a, b)
+                )
+            )
+    );
+
+    table.add_row(
+        Row::new()
+            .with_cell("Region:")
+            .with_cell(
+                addr.region.map_or(
+                    "Unknown".to_string(),
+                    |(a, b)| format!("{}, {}", a, b)
+                )
+            )
+    );
+
+    for subregion in addr.subregions.iter() {
+        table.add_row(
+            Row::new()
+                .with_cell("Subregion:")
+                .with_cell(format!("{}, {}", subregion.0, subregion.1).as_str())
+        );
+    }
+
+    print!("{}", table);
+
+}
+
 fn main() {
 
     let args: Vec<String> = env::args().collect();
@@ -196,7 +258,7 @@ fn main() {
         // Argument is considered an address
         if let Ok(address) = u32::from_str_radix(&arg[2..], 16) {
             let location = get_segment_region_subregion(address);
-            println!("{:#?}", location); // Pretty print the AddressLocation struct
+            print_location(&location);
         } else {
             eprintln!("Invalid address: {}", arg);
             exit(1);
